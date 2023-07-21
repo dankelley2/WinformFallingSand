@@ -31,11 +31,10 @@ namespace Sand
              * [O][1][2] 
              */
 
-            byte[] canDo = byteMap.GetSurroundingBytes(index);
             byte currentByte = byteMap.GetByte(index);
             byte currentMaterial = getMaterial(currentByte);
 
-            if (getMaterial(canDo[1]) < currentMaterial) // check down
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.Down)) < currentMaterial) // check down
             {
                 canMove = true;
 
@@ -54,14 +53,14 @@ namespace Sand
                 }
             }
 
-            if (getMaterial(canDo[0]) < currentMaterial) // check L
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.LowerLeft)) < currentMaterial) // check L
             {
                 movement[0] = -1; movement[1] = 1;
                 canLeft = true;
                 canMove = true;
             }
 
-            if (getMaterial(canDo[2]) < currentMaterial) // check R
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.LowerRight)) < currentMaterial) // check R
             {
                 movement[0] = 1; movement[1] = 1;
                 canRight = true;
@@ -89,11 +88,10 @@ namespace Sand
              * [O][1][2] 
              */
 
-            byte[] canDo = byteMap.GetSurroundingBytes(index);
             byte currentByte = byteMap.GetByte(index);
             byte currentMaterial = getMaterial(currentByte);
 
-            if (getMaterial(canDo[1]) < currentMaterial) // check down
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.Down)) < currentMaterial) // check down
             {
                 canMove = true;
 
@@ -112,14 +110,14 @@ namespace Sand
                 }
             }
 
-            if (getMaterial(canDo[0]) < currentMaterial) // check L
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.LowerLeft)) < currentMaterial) // check L
             {
                 movement[0] = -1; movement[1] = 1;
                 canLeft = true;
                 canMove = true;
             }
 
-            if (getMaterial(canDo[2]) < currentMaterial) // check R
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.LowerRight)) < currentMaterial) // check R
             {
                 movement[0] = 1; movement[1] = 1;
                 canRight = true;
@@ -149,39 +147,38 @@ namespace Sand
              * [O][1][2] 
              */
 
-            byte[] canDo = byteMap.GetSurroundingBytes(index);
             byte currentByte = byteMap.GetByte(index);
             byte currentMaterial = getMaterial(currentByte);
 
-            if (getMaterial(canDo[1]) < currentMaterial) // check down
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.Down)) < currentMaterial) // check down
             {
                 canMove = true;
                 movement[1] = 1;
                 return movement;
             }
 
-            if (getMaterial(canDo[0]) < currentMaterial) // check LL
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.LowerLeft)) < currentMaterial) // check LL
             {
                 movement[0] = -1; movement[1] = 1;
                 canMove = true;
                 canLowLeft = true;
             }
 
-            if (getMaterial(canDo[2]) < currentMaterial) // check LR
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.LowerRight)) < currentMaterial) // check LR
             {
                 movement[0] = 1; movement[1] = 1;
                 canMove = true;
                 canLowRight = true;
             }
 
-            if (getMaterial(canDo[3]) < currentMaterial) // check L
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.Left)) < currentMaterial) // check L
             {
                 movement[0] = -1;
                 canMove = true;
                 canLeft = true;
             }
 
-            if (getMaterial(canDo[4]) < currentMaterial) // check R
+            if (getMaterial(byteMap.GetElementInDirection(index, Bytemap.Direction.Right)) < currentMaterial) // check R
             {
                 movement[0] = 1;
                 canMove = true;

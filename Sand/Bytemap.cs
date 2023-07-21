@@ -64,15 +64,6 @@ namespace Sand
             return Bytes[index];
         }
 
-        public byte[] GetSurroundingBytes(int index)
-        {
-            return new byte[] { getLowerLeft(index),
-                                getDown(index),
-                                getLowerRight(index),
-                                getLeft(index),
-                                getRight(index) };
-        }
-
         public Rectangle GetSurroundingRect(int index, int padding, int scale)
         {
             int x = (index % Width);
@@ -83,68 +74,62 @@ namespace Sand
                                 (padding << 1) * scale);
         }
 
-        public byte getDown(int index)
+        public enum Direction
         {
-            int b = index + Width;
-            if (b > (Width * Height)-1) { return (byte)Game.TYPES.BOUNDS; }
-            else { return Bytes[b]; }
+            Down,
+            LowerLeft,
+            LowerRight,
+            Left,
+            Right,
+            UpperLeft,
+            UpperRight,
+            Up
         }
 
-        public byte getLowerLeft(int index)
+        public byte GetElementInDirection(int index, Direction direction)
         {
-            if (index == 0 || index % Width == 0)
+            int b;
+
+            switch (direction)
             {
-                return (byte)Game.TYPES.BOUNDS;  // out side
-            }
-            int b = index + Width - 1;
-            if (b > (Width * Height) - 1)
-            {
-                return (byte)Game.TYPES.BOUNDS; // out bottom
+                case Direction.Down:
+                    b = index + Width;
+                    break;
+                case Direction.LowerLeft:
+                    if (index == 0 || index % Width == 0) return (byte)Game.TYPES.BOUNDS;
+                    b = index + Width - 1;
+                    break;
+                case Direction.LowerRight:
+                    if (index == 0 || index % Width == Width - 1) return (byte)Game.TYPES.BOUNDS;
+                    b = index + Width + 1;
+                    break;
+                case Direction.Left:
+                    if (index == 0 || index % Width == 0) return (byte)Game.TYPES.BOUNDS;
+                    b = index - 1;
+                    break;
+                case Direction.Right:
+                    if (index == 0 || index % Width == Width - 1) return (byte)Game.TYPES.BOUNDS;
+                    b = index + 1;
+                    break;
+                case Direction.UpperLeft:
+                    if (index == 0 || index < Width || index % Width == 0) return (byte)Game.TYPES.BOUNDS;
+                    b = index - Width - 1;
+                    break;
+                case Direction.UpperRight:
+                    if (index == 0 || index < Width || index % Width == Width - 1) return (byte)Game.TYPES.BOUNDS;
+                    b = index - Width + 1;
+                    break;
+                case Direction.Up:
+                    if (index < Width) return (byte)Game.TYPES.BOUNDS;
+                    b = index - Width;
+                    break;
+                default:
+                    throw new ArgumentException($"Invalid direction: {direction}");
             }
 
-            else { return Bytes[b]; }
-        }
+            if (b > (Width * Height) - 1 || b < 0) return (byte)Game.TYPES.BOUNDS;
 
-        public byte getLowerRight(int index)
-        {
-            if (index == 0 || index % Width == Width - 1)
-            {
-                return (byte)Game.TYPES.BOUNDS; // out side
-            }
-            int b = index + Width + 1;
-            if (b > (Width * Height) - 1)
-            {
-                return (byte)Game.TYPES.BOUNDS; // out bottom
-            }
-            else { return Bytes[b]; }
-        }
-
-        public byte getLeft(int index)
-        {
-            if (index == 0 || index % Width == 0)
-            {
-                return (byte)Game.TYPES.BOUNDS;  // out side
-            }
-            int b = index - 1;
-            if (b > (Width * Height) - 1)
-            {
-                return (byte)Game.TYPES.BOUNDS; // out bottom
-            }
-            else { return Bytes[b]; }
-        }
-
-        public byte getRight(int index)
-        {
-            if (index == 0 || index % Width == Width - 1)
-            {
-                return (byte)Game.TYPES.BOUNDS; // out side
-            }
-            int b = index + 1;
-            if (b > (Width * Height) - 1)
-            {
-                return (byte)Game.TYPES.BOUNDS; // out bottom
-            }
-            else { return Bytes[b]; }
+            return Bytes[b];
         }
 
         public void Fill(byte val)
