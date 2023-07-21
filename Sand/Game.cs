@@ -29,9 +29,18 @@ namespace Sand
         public static readonly Dictionary<int, int> dictColors =
             new Dictionary<int, int> { {(int)TYPES.VOID  , Color.Black.ToArgb()},
                                        {(int)TYPES.FLAME , Color.OrangeRed.ToArgb()},
-                                       {(int)TYPES.EMBER , Color.DarkRed.ToArgb()},
+                                       {(int)TYPES.EMBER , Color.Red.ToArgb()},
                                        {(int)TYPES.SAND  , Color.SandyBrown.ToArgb()},
                                        {(int)TYPES.WATER , Color.Aqua.ToArgb() },
+                                       {(int)TYPES.BOUNDS, Color.DarkSlateGray.ToArgb()}
+            };
+
+        public static readonly Dictionary<int, int> dictSleepColors =
+            new Dictionary<int, int> { {(int)TYPES.VOID  , Color.Black.ToArgb()},
+                                       {(int)TYPES.FLAME , Color.DarkOrange.ToArgb()},
+                                       {(int)TYPES.EMBER , Color.DarkRed.ToArgb()},
+                                       {(int)TYPES.SAND  , Color.Brown.ToArgb()},
+                                       {(int)TYPES.WATER , Color.DarkBlue.ToArgb() },
                                        {(int)TYPES.BOUNDS, Color.DarkSlateGray.ToArgb()}
             };
 
@@ -116,6 +125,10 @@ namespace Sand
                             {
                                 ActivateNeighboringZones(zoneX, zoneY);
                             }
+                            else
+                            {
+                                bytemap.TintPixel(ref bmpBuffer, originalIndex, 0.5);
+                            }
                         }
 
                         // shift down
@@ -133,6 +146,10 @@ namespace Sand
                             if (movePixelsByByteIndex(originalIndex))
                             {
                                 ActivateNeighboringZones(zoneX, zoneY);
+                            }
+                            else
+                            {
+                                bytemap.TintPixel(ref bmpBuffer, originalIndex, 0.5);
                             }
                         }
                     }

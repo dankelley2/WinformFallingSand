@@ -33,6 +33,14 @@ namespace Sand
             }
         }
 
+        public void TintPixel(ref DirectBitmap buffer, int i, double multiplier)
+        {
+            if (multiplier < 0 || multiplier > 1) return;
+
+            byte mat = getMaterial(Bytes[i]);
+            buffer.Bits[i] = Game.dictSleepColors[mat];
+        }
+
         public void CopyByte(ref DirectBitmap buffer, int i)
         {
             byte mat = getMaterial(Bytes[i]);
