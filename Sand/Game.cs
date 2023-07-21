@@ -30,8 +30,8 @@ namespace Sand
             new Dictionary<int, int> { {(int)TYPES.VOID  , Color.Black.ToArgb()},
                                        {(int)TYPES.FLAME , Color.OrangeRed.ToArgb()},
                                        {(int)TYPES.EMBER , Color.Red.ToArgb()},
-                                       {(int)TYPES.SAND  , Color.SandyBrown.ToArgb()},
-                                       {(int)TYPES.WATER , Color.Aqua.ToArgb() },
+                                       {(int)TYPES.SAND  , Color.Tan.ToArgb()},
+                                       {(int)TYPES.WATER , Color.Blue.ToArgb() },
                                        {(int)TYPES.BOUNDS, Color.DarkSlateGray.ToArgb()}
             };
 
@@ -39,7 +39,7 @@ namespace Sand
             new Dictionary<int, int> { {(int)TYPES.VOID  , Color.Black.ToArgb()},
                                        {(int)TYPES.FLAME , Color.DarkOrange.ToArgb()},
                                        {(int)TYPES.EMBER , Color.DarkRed.ToArgb()},
-                                       {(int)TYPES.SAND  , Color.Brown.ToArgb()},
+                                       {(int)TYPES.SAND  , Color.SandyBrown.ToArgb()},
                                        {(int)TYPES.WATER , Color.DarkBlue.ToArgb() },
                                        {(int)TYPES.BOUNDS, Color.DarkSlateGray.ToArgb()}
             };

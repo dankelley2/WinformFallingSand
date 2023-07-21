@@ -75,6 +75,64 @@ namespace Sand
             return movement;
         }
 
+        public static short[] flowSmoke(int index, out bool canMove)
+        {
+            canMove = false;
+            short[] randX = new short[2] { -1, 1 };
+            short[] randY = new short[2] { 0, 1 };
+            short[] movement = new short[2] { 0, 0 };
+            bool canLeft = false;
+            bool canRight = false;
+            /*
+             * CanDo:
+             *    [I]
+             * [O][1][2] 
+             */
+
+            byte[] canDo = byteMap.GetSurroundingBytes(index);
+            byte currentByte = byteMap.GetByte(index);
+            byte currentMaterial = getMaterial(currentByte);
+
+            if (getMaterial(canDo[1]) < currentMaterial) // check down
+            {
+                canMove = true;
+
+                //we floating in this bitch?
+                if (RandNum(0, 100) > Game.dictFloatFactors[currentMaterial])
+                {
+                    movement[1] = randY[RandNum(0, 2)];
+                }
+                else
+                {
+                    movement[1] = 1;
+                }
+                if (RandNum(0, 100) > Game.dictFloatFactors[currentMaterial])
+                {
+                    return movement;
+                }
+            }
+
+            if (getMaterial(canDo[0]) < currentMaterial) // check L
+            {
+                movement[0] = -1; movement[1] = 1;
+                canLeft = true;
+                canMove = true;
+            }
+
+            if (getMaterial(canDo[2]) < currentMaterial) // check R
+            {
+                movement[0] = 1; movement[1] = 1;
+                canRight = true;
+                canMove = true;
+            }
+
+            if (canLeft && canRight)
+            {
+                movement[0] = randX[RandNum(0, 2)];
+            }
+            return movement;
+        }
+
         public static short[] flowWater(int index, out bool canMove)
         {
             canMove = false;

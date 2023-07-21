@@ -47,15 +47,16 @@
             // ImgSandbox
             // 
             this.ImgSandbox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ImgSandbox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             this.ImgSandbox.Location = new System.Drawing.Point(0, 0);
             this.ImgSandbox.Name = "ImgSandbox";
             this.ImgSandbox.Size = new System.Drawing.Size(512, 512);
             this.ImgSandbox.TabIndex = 0;
             this.ImgSandbox.TabStop = false;
+            this.ImgSandbox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ImgSandbox_MouseClick);
             this.ImgSandbox.MouseEnter += new System.EventHandler(this.ImgSandbox_MouseEnter);
             this.ImgSandbox.MouseLeave += new System.EventHandler(this.ImgSandbox_MouseLeave);
             this.ImgSandbox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImgSandbox_MouseMove);
-            this.ImgSandbox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ImgSandbox_MouseClick);
             this.ImgSandbox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ImgSandbox_MouseUp);
             // 
             // lblParticleCount
