@@ -15,43 +15,43 @@ namespace Sand
     {
         public delegate short[] FlowDelegate(int index, out bool canMove);
 
-        public enum TYPES{VOID=0, FLAME=1, EMBER=2, WATER=3, SAND=4, BOUNDS=15}
+        public enum SandType{VOID=0, FLAME=1, EMBER=2, WATER=3, SAND=4, BOUNDS=15}
 
         public static readonly Dictionary<int, int> dictFloatFactors =
-            new Dictionary<int, int> { {(int)TYPES.VOID  ,  0},
-                                       {(int)TYPES.FLAME , 75},
-                                       {(int)TYPES.EMBER , 25},
-                                       {(int)TYPES.SAND  , 10},
-                                       {(int)TYPES.WATER , 10},
-                                       {(int)TYPES.BOUNDS,  0}
+            new Dictionary<int, int> { {(int)SandType.VOID  ,  0},
+                                       {(int)SandType.FLAME , 75},
+                                       {(int)SandType.EMBER , 25},
+                                       {(int)SandType.SAND  , 10},
+                                       {(int)SandType.WATER , 10},
+                                       {(int)SandType.BOUNDS,  0}
             };
 
         public static readonly Dictionary<int, int> dictColors =
-            new Dictionary<int, int> { {(int)TYPES.VOID  , Color.Black.ToArgb()},
-                                       {(int)TYPES.FLAME , Color.OrangeRed.ToArgb()},
-                                       {(int)TYPES.EMBER , Color.Red.ToArgb()},
-                                       {(int)TYPES.SAND  , Color.Tan.ToArgb()},
-                                       {(int)TYPES.WATER , Color.Blue.ToArgb() },
-                                       {(int)TYPES.BOUNDS, Color.DarkSlateGray.ToArgb()}
+            new Dictionary<int, int> { {(int)SandType.VOID  , Color.Black.ToArgb()},
+                                       {(int)SandType.FLAME , Color.OrangeRed.ToArgb()},
+                                       {(int)SandType.EMBER , Color.Red.ToArgb()},
+                                       {(int)SandType.SAND  , Color.Tan.ToArgb()},
+                                       {(int)SandType.WATER , Color.Blue.ToArgb() },
+                                       {(int)SandType.BOUNDS, Color.DarkSlateGray.ToArgb()}
             };
 
         public static readonly Dictionary<int, int> dictSleepColors =
-            new Dictionary<int, int> { {(int)TYPES.VOID  , Color.Black.ToArgb()},
-                                       {(int)TYPES.FLAME , Color.DarkOrange.ToArgb()},
-                                       {(int)TYPES.EMBER , Color.DarkRed.ToArgb()},
-                                       {(int)TYPES.SAND  , Color.SandyBrown.ToArgb()},
-                                       {(int)TYPES.WATER , Color.DarkBlue.ToArgb() },
-                                       {(int)TYPES.BOUNDS, Color.DarkSlateGray.ToArgb()}
+            new Dictionary<int, int> { {(int)SandType.VOID  , Color.Black.ToArgb()},
+                                       {(int)SandType.FLAME , Color.DarkOrange.ToArgb()},
+                                       {(int)SandType.EMBER , Color.DarkRed.ToArgb()},
+                                       {(int)SandType.SAND  , Color.SandyBrown.ToArgb()},
+                                       {(int)SandType.WATER , Color.DarkBlue.ToArgb() },
+                                       {(int)SandType.BOUNDS, Color.DarkSlateGray.ToArgb()}
             };
 
         public static readonly Dictionary<int, FlowDelegate> dictMvmtFnc =
             new Dictionary<int, FlowDelegate> {
-                                       {(int)TYPES.VOID ,  Pixels.flowNone},
-                                       {(int)TYPES.FLAME , Pixels.flowBasic},
-                                       {(int)TYPES.EMBER , Pixels.flowBasic},
-                                       {(int)TYPES.SAND  , Pixels.flowBasic},
-                                       {(int)TYPES.WATER , Pixels.flowWater},
-                                       {(int)TYPES.BOUNDS, Pixels.flowNone}
+                                       {(int)SandType.VOID ,  Pixels.flowNone},
+                                       {(int)SandType.FLAME , Pixels.flowBasic},
+                                       {(int)SandType.EMBER , Pixels.flowBasic},
+                                       {(int)SandType.SAND  , Pixels.flowBasic},
+                                       {(int)SandType.WATER , Pixels.flowWater},
+                                       {(int)SandType.BOUNDS, Pixels.flowNone}
             };
 
         private DirectBitmap bmpBuffer;
@@ -73,7 +73,7 @@ namespace Sand
             this.scale = canvas.Width / width;
             bmpBuffer = new DirectBitmap(width, width);
             bytemap = new Bytemap(width, width);
-            bytemap.Fill((byte)TYPES.VOID); // Fill with Void
+            bytemap.Fill((byte)SandType.VOID); // Fill with Void
             bytemap.CopyBytes(ref bmpBuffer); // Copy to Buffer
             Pixels.byteMap = bytemap;
             canvas.Image = bmpBuffer.Bitmap;
@@ -105,7 +105,9 @@ namespace Sand
                     // Check for active pixels in zone
                     if (Zones[zoneX, zoneY] == 0) continue;
 
+                    // Increment active zones
                     ActiveZones++;
+                    var ActivePixelsInZone = 0;
 
                     // Reset active pixel count
                     Zones[zoneX, zoneY] = 0;
@@ -124,6 +126,7 @@ namespace Sand
                             if (movePixelsByByteIndex(originalIndex))
                             {
                                 ActivateNeighboringZones(zoneX, zoneY);
+                                ActivePixelsInZone++;
                             }
                             else
                             {
@@ -146,6 +149,7 @@ namespace Sand
                             if (movePixelsByByteIndex(originalIndex))
                             {
                                 ActivateNeighboringZones(zoneX, zoneY);
+                                ActivePixelsInZone++;
                             }
                             else
                             {
@@ -153,6 +157,13 @@ namespace Sand
                             }
                         }
                     }
+
+                    // For Debugging, count if nothing in the whole zone was moved
+                    if (ActivePixelsInZone == 0)
+                    {
+
+                    }
+
                 }
             }
 
@@ -192,13 +203,13 @@ namespace Sand
             Byte Settings = Pixels.getBytePixelSettings(BytePixel); // shift to return first four bits
 
             // If not Void material
-            if (Material == (byte)TYPES.VOID) return false;
+            if (Material == (byte)SandType.VOID) return false;
 
             // i++;
             mvmtDelta = dictMvmtFnc[(bytemap.getMaterial(bytemap.Bytes[byteIndex]))](byteIndex, out bool canMove);
-            if (Material == (byte)TYPES.BOUNDS)
+            if (Material == (byte)SandType.BOUNDS)
             {
-                bytemap.CopyByte(ref bmpBuffer, byteIndex);
+                bytemap.AddPixelToImageBuffer(ref bmpBuffer, byteIndex);
             }
 
             // return if stuck
@@ -206,26 +217,6 @@ namespace Sand
 
             //add moved flag for this run
             bytemap.bitSwapyCopy(ref bmpBuffer, byteIndex, mvmtDelta, out int newIndex);
-
-            ////Get new x & y
-            //int sx = (newIndex % gridWidth);
-            //int sy = (newIndex / gridWidth);
-
-            //// Iterate over all 9 surrounding pixels; which is every possible movement vector, mark those zones as active
-            //for (int dy = -1; dy <= 1; dy++)
-            //{
-            //    for (int dx = -1; dx <= 1; dx++)
-            //    {
-            //        int neighbourX = sx + dx;
-            //        int neighbourY = sy + dy;
-
-            //        // Skip out-of-bounds pixels
-            //        if (neighbourX < 0 || neighbourX >= gridWidth || neighbourY < 0 || neighbourY >= gridWidth) continue;
-
-            //        // Increment their zone as well
-            //        Zones[neighbourX / zoneWidth, neighbourY / zoneWidth]++;
-            //    }
-            //}
 
             return true;
         }
@@ -235,8 +226,14 @@ namespace Sand
             location.X = Math.Max(Math.Min(location.X, gridWidth - 1), 0);
             location.Y = Math.Max(Math.Min(location.Y, gridWidth - 1), 0);
 
+
+            foreach (int i in bytemap.getRectIndexArray(50, 50, 50, 50))
+            {
+                bytemap.AddPixelToImageBuffer(ref bmpBuffer, i, SandType.FLAME);
+            }
+
             //If pixel is not used 
-            if (bytemap.GetByte(location.X, location.Y) == (byte)TYPES.VOID)
+            if (bytemap.GetByte(location.X, location.Y) == (byte)SandType.VOID)
             {
                 // update active zone with pixel
                 int sx = location.X / zoneWidth;

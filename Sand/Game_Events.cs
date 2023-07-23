@@ -27,12 +27,12 @@ namespace Sand
     public partial class Game
     {
         public int penIndex = 0;
-        public byte[] penTypes = { (int)TYPES.VOID  ,
-                                   (int)TYPES.FLAME ,
-                                   (int)TYPES.EMBER ,
-                                   (int)TYPES.SAND  ,
-                                   (int)TYPES.WATER ,
-                                   (int)TYPES.BOUNDS};
+        public byte[] penTypes = { (int)SandType.VOID  ,
+                                   (int)SandType.FLAME ,
+                                   (int)SandType.EMBER ,
+                                   (int)SandType.SAND  ,
+                                   (int)SandType.WATER ,
+                                   (int)SandType.BOUNDS};
 
 
         public void ImgSandbox_LMB(object sender, EventArgs e)

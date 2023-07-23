@@ -41,10 +41,44 @@ namespace Sand
             buffer.Bits[i] = Game.dictSleepColors[mat];
         }
 
-        public void CopyByte(ref DirectBitmap buffer, int i)
+        public int[] getRectIndexArray(int x, int y, int width, int height)
+        {
+            int size = width * height;
+            int offset = y * this.Width + x;
+            int[] retBytes = new int[size];
+
+            // check if end of rect target is outside the array
+            if (offset + size > (this.Width * this.Height))
+            {
+                throw new ArgumentOutOfRangeException($"The total size of items in the requested rectangle exceeds the length of the array: requested: {size}, available: {Width * Height - offset}");
+            }
+
+            int i = 0;
+            //iterate through y values
+            for (int rowIndex = 0; rowIndex < width; rowIndex++)
+            {
+                //iterate through x values
+                for (int cIndex = 0; cIndex < height; cIndex++)
+                {
+                    retBytes[i++] = offset++;
+                }
+                //increment row
+                offset += this.Width - width;
+            }
+
+            return retBytes;
+        }
+
+        public void AddPixelToImageBuffer(ref DirectBitmap buffer, int i)
         {
             byte mat = getMaterial(Bytes[i]);
             buffer.Bits[i] = Game.dictColors[mat];
+        }
+
+        public void AddPixelToImageBuffer(ref DirectBitmap buffer, int i, Game.SandType type)
+        {
+            Bytes[i] = (byte)type;
+            buffer.Bits[i] = Game.dictColors[(byte)type];
         }
 
         public int GetByteIndex(short[] point)
@@ -96,38 +130,38 @@ namespace Sand
                     b = index + Width;
                     break;
                 case Direction.LowerLeft:
-                    if (index == 0 || index % Width == 0) return (byte)Game.TYPES.BOUNDS;
+                    if (index == 0 || index % Width == 0) return (byte)Game.SandType.BOUNDS;
                     b = index + Width - 1;
                     break;
                 case Direction.LowerRight:
-                    if (index == 0 || index % Width == Width - 1) return (byte)Game.TYPES.BOUNDS;
+                    if (index == 0 || index % Width == Width - 1) return (byte)Game.SandType.BOUNDS;
                     b = index + Width + 1;
                     break;
                 case Direction.Left:
-                    if (index == 0 || index % Width == 0) return (byte)Game.TYPES.BOUNDS;
+                    if (index == 0 || index % Width == 0) return (byte)Game.SandType.BOUNDS;
                     b = index - 1;
                     break;
                 case Direction.Right:
-                    if (index == 0 || index % Width == Width - 1) return (byte)Game.TYPES.BOUNDS;
+                    if (index == 0 || index % Width == Width - 1) return (byte)Game.SandType.BOUNDS;
                     b = index + 1;
                     break;
                 case Direction.UpperLeft:
-                    if (index == 0 || index < Width || index % Width == 0) return (byte)Game.TYPES.BOUNDS;
+                    if (index == 0 || index < Width || index % Width == 0) return (byte)Game.SandType.BOUNDS;
                     b = index - Width - 1;
                     break;
                 case Direction.UpperRight:
-                    if (index == 0 || index < Width || index % Width == Width - 1) return (byte)Game.TYPES.BOUNDS;
+                    if (index == 0 || index < Width || index % Width == Width - 1) return (byte)Game.SandType.BOUNDS;
                     b = index - Width + 1;
                     break;
                 case Direction.Up:
-                    if (index < Width) return (byte)Game.TYPES.BOUNDS;
+                    if (index < Width) return (byte)Game.SandType.BOUNDS;
                     b = index - Width;
                     break;
                 default:
                     throw new ArgumentException($"Invalid direction: {direction}");
             }
 
-            if (b > (Width * Height) - 1 || b < 0) return (byte)Game.TYPES.BOUNDS;
+            if (b > (Width * Height) - 1 || b < 0) return (byte)Game.SandType.BOUNDS;
 
             return Bytes[b];
         }
@@ -163,12 +197,12 @@ namespace Sand
         {
             byte tmpVal = Bytes[index];
             newIndex = index + newPx[0] + (Width*newPx[1]);
-            if (Pixels.getMaterial(Bytes[newIndex]) == (byte)Game.TYPES.BOUNDS) { return; } //Cant swap wall
+            if (Pixels.getMaterial(Bytes[newIndex]) == (byte)Game.SandType.BOUNDS) { return; } //Cant swap wall
             Bytes[index] = Bytes[newIndex];
             Bytes[newIndex] = tmpVal;
 
-            CopyByte(ref buffer, index);
-            CopyByte(ref buffer, newIndex);
+            AddPixelToImageBuffer(ref buffer, index);
+            AddPixelToImageBuffer(ref buffer, newIndex);
         }
 
         public void setMovedFlag(int index, byte val)
